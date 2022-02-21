@@ -151,7 +151,7 @@ def leave():
 
 And now let's start
 
-### Stage 1: Leak heap address (Table of content)
+### Stage 1: Leak heap address ([Table of content](#table-of-content))
 
 We know that Sing() will execute function inside `0x0000000000604d08` and print data of the next 8-byte address `0x0000000001b10e88` (image above) so we know that `0x0000000000604d08` is remain if we want our string to be printed. First we will capture 2 parrots with index 0 and 1:
 
@@ -218,7 +218,7 @@ log.success('Leak heap address: ' + hex(heap_leak))
 
 And we get heap address. Let's move on!
 
-### Stage 2: Leak libc address (Table of content)
+### Stage 2: Leak libc address ([Table of content](#table-of-content))
 
 By using above technique, we can get libc address of alarm, then subtract with the offset and we get libc base address:
 
@@ -242,7 +242,7 @@ Running that script will give us libc base address:
 
 ![libc_base.png](images/libc_base.png)
 
-### Stage 3: Leak stack address (Table of content)
+### Stage 3: Leak stack address ([Table of content](#table-of-content))
 
 Now we need to leak stack address, then calculate distance from ret address to the leaked stack address. The aim is to overwrite the stack, where the program ret, to our shellcode and program will execute that.
 
@@ -289,7 +289,7 @@ Let's check if it's correct:
 
 So that's correct and we get the return address. Let's move on final stage: get shell!
 
-### Stage 4: Get shell (Table of content)
+### Stage 4: Get shell ([Table of content](#table-of-content))
 
 With the control of rip, especially arbitrary write to stack, we can create shell using `system("/bin/sh)"` or one gadget. For this writeup I will use one gadget instead.
 
