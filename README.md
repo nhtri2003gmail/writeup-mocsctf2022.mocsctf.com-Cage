@@ -110,7 +110,8 @@ With address of libc and heap, we can make it Sing() to execute libc function wh
 
 # 3. Exploit
 
-Table of content:
+### Table of content:
+  
   1. [Leak heap address](#stage-1-leak-heap-address-table-of-content)
   2. [Leak libc address](#stage-2-leak-libc-address-table-of-content)
   3. [Leak stack address](#stage-3-leak-stack-address-table-of-content)
