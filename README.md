@@ -1,4 +1,4 @@
-# mocsctf2022.mocsctf.com Cage
+# mocsctf2022.mocsctf.com - Cage
 
 Origin challenge link: https://mocsctf2022.mocsctf.com/challenges
 
