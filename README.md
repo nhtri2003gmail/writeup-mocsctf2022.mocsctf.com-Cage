@@ -103,26 +103,18 @@ We know that we have heap buffer overflow, with which we can do arbitrary write 
 With address of libc and heap, we can make it Sing() to execute libc function which create shell for us. But after I did, I realize we also need to leak stack address. From leaked stack address, we will calculate the return address of main, then arbitrarily write to return and we get shell.
 
 - Summary:
-
   1. Leak heap address
-
   2. Leak libc address
-
   3. Leak stack address
-
   4. Get shell
 
 # 3. Exploit
 
 Table of content:
-
-  1. Leak heap address
-
-  2. Leak libc address
-
-  3. Leak stack address
-
-  4. Get shell
+  1. [Leak heap address](#stage-1-leak-heap-address-table-of-content)
+  2. [Leak libc address](#stage-2-leak-libc-address-table-of-content)
+  3. [Leak stack address](#stage-3-leak-stack-address-table-of-content)
+  4. [Get shell](#stage-4-get-shell-table-of-content)
 
 ---
 
