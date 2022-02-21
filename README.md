@@ -160,7 +160,7 @@ capture(0, 'parrot', b'0'*0x10)    # Not overwrite to next chunk
 capture(1, 'parrot', b'1'*0x10)    # Not overwrite to next chunk
 ```
 
-Next, we will overwrite the address contain the string of `1` into address of `cage`, which contain heap address:
+Next, we will overwrite the address containing the string of `1` into address of `cage`, which contain heap address:
 
 ```
 cage = 0x605380
